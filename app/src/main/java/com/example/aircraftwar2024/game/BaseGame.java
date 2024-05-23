@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -468,6 +469,16 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
 
     private void paintScoreAndLife() {
         /**TODO:动态绘制文本框显示英雄机的分数和生命值**/
+        // 设置画笔属性
+        mPaint.setColor(Color.RED);
+        mPaint.setTextSize(60);
+        mPaint.setTypeface(Typeface.DEFAULT_BOLD);
+
+        // 绘制分数
+        canvas.drawText("Score: " + getScore(), 50, 100, mPaint);
+
+        // 绘制生命值
+        canvas.drawText("Life: " + heroAircraft.getHp(), 50, 200, mPaint);
     }
 
     @Override
@@ -493,7 +504,25 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     public void run() {
         /*TODO*/
         while(mbLoop) {
+            long startTime = System.currentTimeMillis();
+
+            // 执行游戏逻辑
+            action();
+
+            // 绘制游戏画面
             draw();
+
+            long endTime = System.currentTimeMillis();
+            long deltaTime = endTime - startTime;
+
+            // 保持固定的刷新率
+            if (deltaTime < timeInterval) {
+                try {
+                    Thread.sleep(timeInterval - deltaTime);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
         }
     }
 }

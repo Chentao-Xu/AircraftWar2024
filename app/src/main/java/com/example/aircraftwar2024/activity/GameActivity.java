@@ -30,23 +30,21 @@ public class GameActivity extends AppCompatActivity {
 
         if(getIntent() != null){
             gameType = getIntent().getIntExtra("gameType",1);
+            Log.i("GameType",""+gameType);
         }
 
         /*TODO:根据用户选择的难度加载相应的游戏界面*/
-        BaseGame baseGameView = null;
+        BaseGame baseGameView;
         switch (gameType) {
-            case 0 :{
-                baseGameView = new EasyGame(this);
-                break;
-            }
-            case 1 : {
+            case 1 :
                 baseGameView = new MediumGame(this);
                 break;
-            }
-            case 2 : {
+            case 2 :
                 baseGameView = new HardGame(this);
                 break;
-            }
+            default:
+                baseGameView = new EasyGame(this); // 默认为简单模式
+                break;
         }
         setContentView(baseGameView);
     }
