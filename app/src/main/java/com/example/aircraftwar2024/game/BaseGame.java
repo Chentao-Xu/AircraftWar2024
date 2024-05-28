@@ -505,6 +505,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                     mPaint.setColor(Color.RED);
                     int right = 805 + ( 240 * enemy.getHp() / enemy.getMaxHp() );
                     canvas.drawRect(805,55,right,75, mPaint);
+                    break;
                 }
             }
         }
