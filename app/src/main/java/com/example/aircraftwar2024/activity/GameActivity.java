@@ -11,6 +11,7 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.aircraftwar2024.playerDAO.Player;
 import com.example.aircraftwar2024.game.BaseGame;
 import com.example.aircraftwar2024.game.EasyGame;
 import com.example.aircraftwar2024.game.HardGame;
@@ -39,22 +40,7 @@ public class GameActivity extends AppCompatActivity {
             Log.i("GameType",""+gameType);
         }
 
-        /*TODO:根据用户选择的难度加载相应的游戏界面*/
-        BaseGame baseGameView;
-        switch (gameType) {
-            case 1 :
-                baseGameView = new MediumGame(this);
-                break;
-            case 2 :
-                baseGameView = new HardGame(this);
-                break;
-            default:
-                baseGameView = new EasyGame(this); // 默认为简单模式
-                break;
-        }
-        setContentView(baseGameView);
-
-        // 初始化Handler
+        // 游戏结束
         handler = new Handler(Looper.getMainLooper()) {
             @Override
             public void handleMessage(Message msg) {
@@ -73,7 +59,20 @@ public class GameActivity extends AppCompatActivity {
             }
         };
 
-        simulateGameOver();
+        /*TODO:根据用户选择的难度加载相应的游戏界面*/
+        BaseGame baseGameView;
+        switch (gameType) {
+            case 1 :
+                baseGameView = new MediumGame(this,handler);
+                break;
+            case 2 :
+                baseGameView = new HardGame(this,handler);
+                break;
+            default:
+                baseGameView = new EasyGame(this,handler); // 默认为简单模式
+                break;
+        }
+        setContentView(baseGameView);
     }
 
     public void getScreenHW(){
@@ -94,19 +93,5 @@ public class GameActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-    }
-
-    private void simulateGameOver() {
-        new Thread(() -> {
-            try {
-                Thread.sleep(10000); // 模拟游戏运行3秒后结束
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            Player user = new Player("Player1", 100, LocalDateTime.now());
-            Message message = handler.obtainMessage(1, user);
-            handler.sendMessage(message);
-        }).start();
     }
 }

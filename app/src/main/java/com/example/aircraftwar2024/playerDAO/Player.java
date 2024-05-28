@@ -6,9 +6,9 @@ import java.time.LocalDateTime;
 public class Player implements Serializable {
     private String name;
     private int score;
-    private LocalDateTime time;
+    private String time;
 
-    public Player(String name, int score, LocalDateTime time) {
+    public Player(String name, int score, String time) {
         this.name = name;
         this.score = score;
         this.time = time;
@@ -22,7 +22,7 @@ public class Player implements Serializable {
         return score;
     }
 
-    public LocalDateTime getTime(){
+    public String getTime(){
         return time;
     }
 
