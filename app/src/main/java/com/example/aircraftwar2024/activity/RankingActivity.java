@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.text.InputFilter;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -113,12 +114,12 @@ public class RankingActivity extends AppCompatActivity {
     private void showList() {
         // 获取所有数据并初始化排行榜列表
         rankingList = new ArrayList<>();
-        List<Player> users = playerDao.getAllData();
-        for (Player user : users) {
+        List<Player> players = playerDao.getAllData();
+        for (Player player : players) {
             Map<String, Object> map = new HashMap<>();
-            map.put("name", user.getName());
-            map.put("score", user.getScore());
-            map.put("time", user.getTime());
+            map.put("name", player.getName());
+            map.put("score", player.getScore());
+            map.put("time", player.getTime());
             rankingList.add(map);
         }
 
@@ -127,6 +128,32 @@ public class RankingActivity extends AppCompatActivity {
                 new String[]{"name", "score", "time"},
                 new int[]{R.id.list_name, R.id.score, R.id.time});
         listView.setAdapter(adapter);
+
+        listView.setOnItemClickListener((parent, view, position, l) -> {
+
+            //添加取消
+            //添加"Yes"按钮
+            AlertDialog alertDialog = new AlertDialog.Builder(RankingActivity.this)
+                    .setTitle("提示")
+                    .setMessage("确认删除该条记录吗")
+                    .setPositiveButton("确定", (dialogInterface, j) -> {
+
+                        //更新排行榜文件
+                        try {
+                            rankingList.remove(position);
+                            playerDao.deleteData(position);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+
+                        adapter.notifyDataSetChanged();
+                    })
+
+                    .setNegativeButton("取消", (dialogInterface, i) -> {
+                    })
+                    .create();
+            alertDialog.show();
+        });
     }
 
 }
