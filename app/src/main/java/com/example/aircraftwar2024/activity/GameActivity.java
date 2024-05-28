@@ -11,11 +11,13 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-import com.example.aircraftwar2024.dao.Player;
 import com.example.aircraftwar2024.game.BaseGame;
 import com.example.aircraftwar2024.game.EasyGame;
 import com.example.aircraftwar2024.game.HardGame;
 import com.example.aircraftwar2024.game.MediumGame;
+import com.example.aircraftwar2024.playerDAO.Player;
+
+import java.time.LocalDateTime;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -64,6 +66,7 @@ public class GameActivity extends AppCompatActivity {
                     intent.putExtra("user_name", user.getName());
                     intent.putExtra("user_score", user.getScore());
                     intent.putExtra("user_time", user.getTime());
+                    intent.putExtra("gameType", gameType);
                     Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
                     startActivity(intent);
                 }
@@ -101,7 +104,7 @@ public class GameActivity extends AppCompatActivity {
                 e.printStackTrace();
             }
 
-            Player user = new Player("Player1", 100, "2024-5-7");
+            Player user = new Player("Player1", 100, LocalDateTime.now());
             Message message = handler.obtainMessage(1, user);
             handler.sendMessage(message);
         }).start();
