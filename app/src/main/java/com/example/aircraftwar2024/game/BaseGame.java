@@ -425,7 +425,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
             //获取当前时间
             Date date = new Date();
             @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
-            player = new Player(null,score,formatter.format(date));
+            player = new Player("empty",score,formatter.format(date));
 
             mbLoop = false;
         }

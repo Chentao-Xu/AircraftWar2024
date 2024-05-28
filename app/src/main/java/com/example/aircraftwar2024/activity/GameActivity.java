@@ -48,10 +48,10 @@ public class GameActivity extends AppCompatActivity {
                 Log.d(TAG, "handleMessage");
                 if (msg.what == 1) {
                     Intent intent = new Intent(GameActivity.this, RankingActivity.class);
-                    Player user = (Player) msg.obj;
-                    intent.putExtra("user_name", user.getName());
-                    intent.putExtra("user_score", user.getScore());
-                    intent.putExtra("user_time", user.getTime());
+                    Player player = (Player) msg.obj;
+                    intent.putExtra("user_name", player.getName());
+                    intent.putExtra("user_score", player.getScore());
+                    intent.putExtra("user_time", player.getTime());
                     intent.putExtra("gameType", gameType);
                     Toast.makeText(GameActivity.this, "Game Over", Toast.LENGTH_SHORT).show();
                     startActivity(intent);
