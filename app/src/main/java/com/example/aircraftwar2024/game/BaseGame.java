@@ -450,6 +450,8 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         //画生命值和分数
         paintScoreAndLife();
 
+        paintBossLife();
+
         mSurfaceHolder.unlockCanvasAndPost(canvas);
 
     }
@@ -479,6 +481,33 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
 
         // 绘制生命值
         canvas.drawText("Life: " + heroAircraft.getHp(), 50, 200, mPaint);
+
+        // 绘制血条
+        mPaint.setColor(Color.BLACK);
+        canvas.drawRect(50,220,330,250, mPaint);
+        mPaint.setColor(Color.WHITE);
+        canvas.drawRect(55,225,325,245, mPaint);
+        mPaint.setColor(Color.RED);
+        int right = 55 + ( 270 * heroAircraft.getHp() / heroAircraft.getMaxHp() );
+        canvas.drawRect(55,225,right,245, mPaint);
+
+    }
+
+    private void paintBossLife() {
+        if (this.existBoss()) {
+            for( AbstractEnemyAircraft enemy:this.enemyAircrafts ) {
+                if (enemy instanceof BossEnemy) {
+                    // 绘制血条
+                    mPaint.setColor(Color.BLACK);
+                    canvas.drawRect(800,50,1050,80, mPaint);
+                    mPaint.setColor(Color.WHITE);
+                    canvas.drawRect(805,55,1045,75, mPaint);
+                    mPaint.setColor(Color.RED);
+                    int right = 805 + ( 240 * enemy.getHp() / enemy.getMaxHp() );
+                    canvas.drawRect(805,55,right,75, mPaint);
+                }
+            }
+        }
     }
 
     @Override
