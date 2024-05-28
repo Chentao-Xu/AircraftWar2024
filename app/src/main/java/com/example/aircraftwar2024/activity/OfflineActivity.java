@@ -35,7 +35,6 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     public void onClick(View v){
         if (v.getId() == R.id.EasyModButton) {
             gameType = 0;
-            Log.i("Button",""+gameType);
         }else if (v.getId() == R.id.NormalModButton) {
             gameType = 1;
         } else if (v.getId() == R.id.HardModButton) {
