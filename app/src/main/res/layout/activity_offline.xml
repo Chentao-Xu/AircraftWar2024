@@ -14,7 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginBottom="300dp"
+        android:layout_marginBottom="300sp"
         android:text="单机模式难度选择"
         android:textSize="35sp" />
 
@@ -27,7 +27,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/OfflineText"
-        android:layout_marginTop="80dp"/>
+        android:layout_marginTop="80sp"/>
 
     <Button
         android:id="@+id/NormalModButton"
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/EasyModButton"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20sp"/>
 
     <Button
         android:id="@+id/HardModButton"
@@ -49,6 +49,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/NormalModButton"
-        android:layout_marginTop="20dp"/>
+        android:layout_marginTop="20sp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

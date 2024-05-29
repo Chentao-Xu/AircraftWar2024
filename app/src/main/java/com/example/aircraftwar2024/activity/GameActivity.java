@@ -16,9 +16,6 @@ import com.example.aircraftwar2024.game.BaseGame;
 import com.example.aircraftwar2024.game.EasyGame;
 import com.example.aircraftwar2024.game.HardGame;
 import com.example.aircraftwar2024.game.MediumGame;
-import com.example.aircraftwar2024.playerDAO.Player;
-
-import java.time.LocalDateTime;
 
 
 public class GameActivity extends AppCompatActivity {
@@ -47,7 +44,7 @@ public class GameActivity extends AppCompatActivity {
                 super.handleMessage(msg);
                 Log.d(TAG, "handleMessage");
                 if (msg.what == 1) {
-                    Intent intent = new Intent(GameActivity.this, RankingActivity.class);
+                    Intent intent = new Intent(GameActivity.this, RecordActivity.class);
                     Player player = (Player) msg.obj;
                     intent.putExtra("user_name", player.getName());
                     intent.putExtra("user_score", player.getScore());

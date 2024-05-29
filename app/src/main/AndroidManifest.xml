@@ -13,10 +13,7 @@
         android:theme="@style/Theme.AircraftWar2024"
         tools:targetApi="34">
         <activity
-            android:name=".ranking_item"
-            android:exported="false" />
-        <activity
-            android:name=".activity.RankingActivity"
+            android:name=".activity.RecordActivity"
             android:exported="false" />
         <activity
             android:name=".activity.OfflineActivity"

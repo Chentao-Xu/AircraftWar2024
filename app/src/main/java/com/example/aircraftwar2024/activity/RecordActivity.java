@@ -17,21 +17,18 @@ import com.example.aircraftwar2024.playerDAO.Player;
 import com.example.aircraftwar2024.playerDAO.PlayerDao;
 import com.example.aircraftwar2024.playerDAO.PlayerDaoImpl;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class RankingActivity extends AppCompatActivity {
+public class RecordActivity extends AppCompatActivity {
 
     private ListView listView;
     private SimpleAdapter adapter;
     private ArrayList<Map<String, Object>> rankingList;
     private PlayerDao playerDao;
-    private String file;
-    private String userName;
     private int userScore;
     private String userTime;
 
@@ -49,6 +46,7 @@ public class RankingActivity extends AppCompatActivity {
         userTime = intent.getStringExtra("user_time");
         int gameType = intent.getIntExtra("gameType",1);
 
+        String file;
         switch (gameType){
             case 1:
                 file = "mediumGame.dat";
@@ -63,7 +61,7 @@ public class RankingActivity extends AppCompatActivity {
 
         // 初始化PlayerDao
         try {
-            playerDao = new PlayerDaoImpl(this,file);
+            playerDao = new PlayerDaoImpl(this, file);
         } catch (IOException | ClassNotFoundException e) {
             throw new RuntimeException(e);
         }
@@ -72,7 +70,7 @@ public class RankingActivity extends AppCompatActivity {
 
         // 返回按钮点击事件
         returnBtn.setOnClickListener(v -> {
-            Intent intent1 = new Intent(RankingActivity.this,MainActivity.class);
+            Intent intent1 = new Intent(RecordActivity.this,MainActivity.class);
             startActivity(intent1);
         });
     }
@@ -95,12 +93,11 @@ public class RankingActivity extends AppCompatActivity {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-                showList();
             }
+            showList();
         });
 
         builder.setNegativeButton("取消",(dialogInterface, i) -> {
-            Toast.makeText(this, "您还未输入姓名", Toast.LENGTH_SHORT).show();
             showList();
         });
 
@@ -111,8 +108,10 @@ public class RankingActivity extends AppCompatActivity {
         // 获取所有数据并初始化排行榜列表
         rankingList = new ArrayList<>();
         List<Player> players = playerDao.getAllData();
+        int index = 0;
         for (Player player : players) {
             Map<String, Object> map = new HashMap<>();
+            map.put("index", ++index);
             map.put("name", player.getName());
             map.put("score", player.getScore());
             map.put("time", player.getTime());
@@ -121,15 +120,13 @@ public class RankingActivity extends AppCompatActivity {
 
         // 设置适配器
         adapter = new SimpleAdapter(this, rankingList, R.layout.activity_item,
-                new String[]{"name", "score", "time"},
-                new int[]{R.id.list_name, R.id.score, R.id.time});
+                new String[]{"index", "name", "score", "time"},
+                new int[]{R.id.index, R.id.list_name, R.id.score, R.id.time});
         listView.setAdapter(adapter);
 
         listView.setOnItemClickListener((parent, view, position, l) -> {
 
-            //添加取消
-            //添加"Yes"按钮
-            AlertDialog alertDialog = new AlertDialog.Builder(RankingActivity.this)
+            AlertDialog alertDialog = new AlertDialog.Builder(RecordActivity.this)
                     .setTitle("提示")
                     .setMessage("确认删除该条记录吗")
                     .setPositiveButton("确定", (dialogInterface, j) -> {

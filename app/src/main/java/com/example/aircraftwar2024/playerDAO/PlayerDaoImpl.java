@@ -3,6 +3,7 @@ package com.example.aircraftwar2024.playerDAO;
 import android.content.Context;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -20,8 +21,16 @@ public class PlayerDaoImpl implements PlayerDao{
     public PlayerDaoImpl(Context context, String file) throws IOException, ClassNotFoundException {
         this.context = context;
         this.file = file;
-        ObjectInputStream ois = new ObjectInputStream(context.openFileInput(file));
-        this.playerList = (List<Player>) ois.readObject();
+
+        // Check if the file exists
+        File dataFile = new File(context.getFilesDir(), file);
+        if (dataFile.exists()) {
+            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(dataFile));
+            this.playerList = (List<Player>) ois.readObject();
+        } else {
+            this.playerList = new ArrayList<>();
+            writeToFile();
+        }
     }
 
     @Override

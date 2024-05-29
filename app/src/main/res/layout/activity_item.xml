@@ -12,34 +12,44 @@
 
 
         <TextView
+            android:id="@+id/index"
+            android:layout_width="40sp"
+            android:layout_height="match_parent"
+            android:layout_weight="3"
+            android:text="排名"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+        <TextView
             android:id="@+id/list_name"
-            android:layout_width="40dp"
+            android:layout_width="40sp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:text="用户"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/score"
-            android:layout_width="40dp"
+            android:layout_width="40sp"
             android:layout_height="match_parent"
             android:layout_weight="3"
             android:text="分数"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
         <TextView
             android:id="@+id/time"
-            android:layout_width="149dp"
+            android:layout_width="150sp"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:text="时间"
             android:textAlignment="center"
             android:textColor="@color/black"
-            android:textSize="20dp" />
+            android:textSize="20sp" />
 
     </LinearLayout>
 
