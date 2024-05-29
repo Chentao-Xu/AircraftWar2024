@@ -15,12 +15,12 @@ public class PlayerDaoImpl implements PlayerDao{
 
     private List<Player> playerList;
     private Context context;
-    private File file;
+    private String file;
 
-    public PlayerDaoImpl(Context context, File file) throws IOException, ClassNotFoundException {
+    public PlayerDaoImpl(Context context, String file) throws IOException, ClassNotFoundException {
         this.context = context;
         this.file = file;
-        ObjectInputStream ois = new ObjectInputStream(context.openFileInput(file.getName()));
+        ObjectInputStream ois = new ObjectInputStream(context.openFileInput(file));
         this.playerList = (List<Player>) ois.readObject();
     }
 
@@ -35,7 +35,7 @@ public class PlayerDaoImpl implements PlayerDao{
 
     @Override
     public void writeToFile() throws IOException {
-        ObjectOutputStream oos = new ObjectOutputStream(context.openFileOutput(file.getName(), Context.MODE_PRIVATE));
+        ObjectOutputStream oos = new ObjectOutputStream(context.openFileOutput(file, Context.MODE_PRIVATE));
         oos.writeObject(playerList);
         oos.close();
     }

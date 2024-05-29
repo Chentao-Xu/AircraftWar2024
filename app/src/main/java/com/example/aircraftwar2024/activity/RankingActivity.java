@@ -3,13 +3,9 @@ package com.example.aircraftwar2024.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.text.InputFilter;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -34,7 +30,7 @@ public class RankingActivity extends AppCompatActivity {
     private SimpleAdapter adapter;
     private ArrayList<Map<String, Object>> rankingList;
     private PlayerDao playerDao;
-    private File file;
+    private String file;
     private String userName;
     private int userScore;
     private String userTime;
@@ -42,7 +38,7 @@ public class RankingActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_ranking);
+        setContentView(R.layout.activity_record);
 
         listView = findViewById(R.id.list);
         Button returnBtn = findViewById(R.id.return_btn);
@@ -55,13 +51,13 @@ public class RankingActivity extends AppCompatActivity {
 
         switch (gameType){
             case 1:
-                file = new File(getFilesDir(), "mediumGame.dat");
+                file = "mediumGame.dat";
                 break;
             case 2:
-                file = new File(getFilesDir(), "hardGame.dat");
+                file = "hardGame.dat";
                 break;
             default:
-                file = new File(getFilesDir(), "easyGame.dat");
+                file = "easyGame.dat";
                 break;
         }
 
@@ -124,7 +120,7 @@ public class RankingActivity extends AppCompatActivity {
         }
 
         // 设置适配器
-        adapter = new SimpleAdapter(this, rankingList, R.layout.activity_ranking_item,
+        adapter = new SimpleAdapter(this, rankingList, R.layout.activity_item,
                 new String[]{"name", "score", "time"},
                 new int[]{R.id.list_name, R.id.score, R.id.time});
         listView.setAdapter(adapter);
