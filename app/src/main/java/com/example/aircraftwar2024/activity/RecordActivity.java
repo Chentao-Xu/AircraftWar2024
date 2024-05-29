@@ -106,17 +106,7 @@ public class RecordActivity extends AppCompatActivity {
 
     private void showList() {
         // 获取所有数据并初始化排行榜列表
-        rankingList = new ArrayList<>();
-        List<Player> players = playerDao.getAllData();
-        int index = 0;
-        for (Player player : players) {
-            Map<String, Object> map = new HashMap<>();
-            map.put("index", ++index);
-            map.put("name", player.getName());
-            map.put("score", player.getScore());
-            map.put("time", player.getTime());
-            rankingList.add(map);
-        }
+        rankingList = getRankingList();
 
         // 设置适配器
         adapter = new SimpleAdapter(this, rankingList, R.layout.activity_item,
@@ -133,8 +123,8 @@ public class RecordActivity extends AppCompatActivity {
 
                         //更新排行榜文件
                         try {
-                            rankingList.remove(position);
                             playerDao.deleteData(position);
+                            rankingList = getRankingList();
                         } catch (IOException e) {
                             e.printStackTrace();
                         }
@@ -147,6 +137,22 @@ public class RecordActivity extends AppCompatActivity {
                     .create();
             alertDialog.show();
         });
+    }
+
+    public ArrayList<Map<String, Object>> getRankingList(){
+        // 获取所有数据并初始化排行榜列表
+        rankingList = new ArrayList<>();
+        List<Player> players = playerDao.getAllData();
+        int index = 0;
+        for (Player player : players) {
+            Map<String, Object> map = new HashMap<>();
+            map.put("index", ++index);
+            map.put("name", player.getName());
+            map.put("score", player.getScore());
+            map.put("time", player.getTime());
+            rankingList.add(map);
+        }
+        return rankingList;
     }
 
 }
