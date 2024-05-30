@@ -428,11 +428,6 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
             player = new Player("test",score,formatter.format(date));
 
             mbLoop = false;
-
-            Message message = Message.obtain();
-            message.what = 1;
-            message.obj = player;
-            handler.sendMessage(message);
         }
 
     }
@@ -554,25 +549,15 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     public void run() {
         /*TODO*/
         while(mbLoop) {
-            long startTime = System.currentTimeMillis();
-
             // 执行游戏逻辑
             action();
-
             // 绘制游戏画面
             draw();
-
-            long endTime = System.currentTimeMillis();
-            long deltaTime = endTime - startTime;
-
-            // 保持固定的刷新率
-            if (deltaTime < timeInterval) {
-                try {
-                    Thread.sleep(timeInterval - deltaTime);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
         }
+
+        Message message = Message.obtain();
+        message.what = 1;
+        message.obj = player;
+        handler.sendMessage(message);
     }
 }

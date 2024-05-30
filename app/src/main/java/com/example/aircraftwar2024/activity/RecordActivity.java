@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SimpleAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.aircraftwar2024.R;
@@ -26,11 +27,13 @@ import java.util.Map;
 public class RecordActivity extends AppCompatActivity {
 
     private ListView listView;
+    private TextView textView;
     private SimpleAdapter adapter;
     private ArrayList<Map<String, Object>> rankingList;
     private PlayerDao playerDao;
     private int userScore;
     private String userTime;
+    private String gameTypeString;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,6 +41,7 @@ public class RecordActivity extends AppCompatActivity {
         setContentView(R.layout.activity_record);
 
         listView = findViewById(R.id.list);
+        textView = findViewById(R.id.gameType);
         Button returnBtn = findViewById(R.id.return_btn);
 
         // 获取Intent传递的数据
@@ -50,14 +54,19 @@ public class RecordActivity extends AppCompatActivity {
         switch (gameType){
             case 1:
                 file = "mediumGame.dat";
+                gameTypeString = "正常模式";
                 break;
             case 2:
                 file = "hardGame.dat";
+                gameTypeString = "困难模式";
                 break;
             default:
                 file = "easyGame.dat";
+                gameTypeString = "简单模式";
                 break;
         }
+
+        textView.setText(gameTypeString);
 
         // 初始化PlayerDao
         try {
@@ -67,6 +76,26 @@ public class RecordActivity extends AppCompatActivity {
         }
 
         inputName();
+
+        listView.setOnItemClickListener((parent, view, position, l) -> {
+
+            AlertDialog alertDialog = new AlertDialog.Builder(RecordActivity.this)
+                    .setTitle("提示")
+                    .setMessage("确认删除该条记录吗")
+                    .setPositiveButton("确定", (dialogInterface, j) -> {
+                        //更新排行榜文件
+                        try {
+                            playerDao.deleteData(position);
+                            showList();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    })
+                    .setNegativeButton("取消", (dialogInterface, i) -> {
+                    })
+                    .create();
+            alertDialog.show();
+        });
 
         // 返回按钮点击事件
         returnBtn.setOnClickListener(v -> {
@@ -80,9 +109,8 @@ public class RecordActivity extends AppCompatActivity {
         input.setFilters(new InputFilter[]{new InputFilter.LengthFilter(10)});
         androidx.appcompat.app.AlertDialog.Builder builder = new androidx.appcompat.app.AlertDialog.Builder(this);
         builder.setIcon(android.R.drawable.ic_dialog_info)
-                .setTitle("请输入名字以记录得分")
+                .setTitle("请输入名字")
                 .setView(input);
-        //.setNegativeButton("取消", null)
         builder.setPositiveButton("确定", (dialogInterface, i) -> {
             String name = input.getText().toString();
             if (name.isEmpty()){
@@ -105,42 +133,7 @@ public class RecordActivity extends AppCompatActivity {
     }
 
     private void showList() {
-        // 获取所有数据并初始化排行榜列表
-        rankingList = getRankingList();
 
-        // 设置适配器
-        adapter = new SimpleAdapter(this, rankingList, R.layout.activity_item,
-                new String[]{"index", "name", "score", "time"},
-                new int[]{R.id.index, R.id.list_name, R.id.score, R.id.time});
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener((parent, view, position, l) -> {
-
-            AlertDialog alertDialog = new AlertDialog.Builder(RecordActivity.this)
-                    .setTitle("提示")
-                    .setMessage("确认删除该条记录吗")
-                    .setPositiveButton("确定", (dialogInterface, j) -> {
-
-                        //更新排行榜文件
-                        try {
-                            playerDao.deleteData(position);
-                            rankingList = getRankingList();
-                        } catch (IOException e) {
-                            e.printStackTrace();
-                        }
-
-                        adapter.notifyDataSetChanged();
-                    })
-
-                    .setNegativeButton("取消", (dialogInterface, i) -> {
-                    })
-                    .create();
-            alertDialog.show();
-        });
-    }
-
-    public ArrayList<Map<String, Object>> getRankingList(){
-        // 获取所有数据并初始化排行榜列表
         rankingList = new ArrayList<>();
         List<Player> players = playerDao.getAllData();
         int index = 0;
@@ -152,7 +145,12 @@ public class RecordActivity extends AppCompatActivity {
             map.put("time", player.getTime());
             rankingList.add(map);
         }
-        return rankingList;
-    }
 
+        // 设置适配器
+        adapter = new SimpleAdapter(this, rankingList, R.layout.activity_item,
+                new String[]{"index", "name", "score", "time"},
+                new int[]{R.id.index, R.id.list_name, R.id.score, R.id.time});
+        listView.setAdapter(adapter);
+
+    }
 }
