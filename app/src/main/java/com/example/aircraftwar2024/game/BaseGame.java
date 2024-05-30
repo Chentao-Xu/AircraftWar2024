@@ -16,6 +16,7 @@ import android.view.SurfaceView;
 import android.view.View;
 import androidx.annotation.NonNull;
 import com.example.aircraftwar2024.ImageManager;
+import com.example.aircraftwar2024.R;
 import com.example.aircraftwar2024.activity.GameActivity;
 import com.example.aircraftwar2024.aircraft.AbstractAircraft;
 import com.example.aircraftwar2024.aircraft.AbstractEnemyAircraft;
@@ -23,12 +24,15 @@ import com.example.aircraftwar2024.aircraft.BossEnemy;
 import com.example.aircraftwar2024.aircraft.HeroAircraft;
 import com.example.aircraftwar2024.basic.AbstractFlyingObject;
 import com.example.aircraftwar2024.bullet.AbstractBullet;
+import com.example.aircraftwar2024.music.MyMediaPlayer;
+import com.example.aircraftwar2024.music.MySoundPool;
 import com.example.aircraftwar2024.playerDAO.Player;
 import com.example.aircraftwar2024.factory.enemy_factory.BossFactory;
 import com.example.aircraftwar2024.factory.enemy_factory.EliteFactory;
 import com.example.aircraftwar2024.factory.enemy_factory.EnemyFactory;
 import com.example.aircraftwar2024.factory.enemy_factory.MobFactory;
 import com.example.aircraftwar2024.supply.AbstractFlyingSupply;
+import com.example.aircraftwar2024.supply.BombSupply;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -53,6 +57,18 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     private final Paint mPaint;
     private Player player;
     private Handler handler;
+
+    /**
+     * Music
+     */
+    boolean isMusicOn;
+    private MyMediaPlayer bgmPlayer;
+    private MyMediaPlayer bossBgmPlayer;
+    private MySoundPool mySoundPool;
+    public static final int SOUND_BULLET_HIT = 1;
+    public static final int SOUND_BOMB_EXPLOSION = 2;
+    public static final int SOUND_GET_SUPPLY = 3;
+    public static final int SOUND_GAME_OVER = 4;
 
     //点击屏幕位置
     float clickX = 0, clickY=0;
@@ -139,9 +155,10 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     private final EnemyFactory bossEnemyFactory;
     private final Random random = new Random();
 
-    public BaseGame(Context context, Handler handler){
+    public BaseGame(Context context, Handler handler, boolean isMusicOn){
         super(context);
         this.handler = handler;
+        this.isMusicOn = isMusicOn;
 
         mbLoop = true;
         mPaint = new Paint();  //设置画笔
@@ -149,6 +166,20 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         mSurfaceHolder.addCallback(this);
         this.setFocusable(true);
         ImageManager.initImage(context);
+
+        // 音乐
+        bgmPlayer = new MyMediaPlayer(context, R.raw.bgm);
+        bossBgmPlayer = new MyMediaPlayer(context, R.raw.bgm_boss);
+        mySoundPool = new MySoundPool(context);
+
+        if(isMusicOn) {
+            bgmPlayer.play();
+            // Load sounds
+            mySoundPool.loadSound(R.raw.bullet_hit, SOUND_BULLET_HIT);
+            mySoundPool.loadSound(R.raw.bomb_explosion, SOUND_BOMB_EXPLOSION);
+            mySoundPool.loadSound(R.raw.get_supply, SOUND_GET_SUPPLY);
+            mySoundPool.loadSound(R.raw.game_over, SOUND_GAME_OVER);
+        }
 
         // 初始化英雄机
         heroAircraft = HeroAircraft.getHeroAircraft();
@@ -237,6 +268,11 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         //当得分每超过一次bossScoreThreshold，且当前无boos机存在，则产生一次boss机
         // 普通模式boss机的血量不会变化
         if (this.getScore() >= bossScoreThreshold && !this.existBoss()) {
+            if (isMusicOn) {
+                bgmPlayer.pause();
+                bossBgmPlayer.play();
+            }
+
             bossScoreThreshold += bossScoreThreshold;
             res.add(bossEnemyFactory.createEnemyAircraft(bossLevel));
         }
@@ -356,6 +392,10 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 continue;
             }
             if (heroAircraft.crash(bullet)) {
+                // 播放子弹音效
+                if(isMusicOn) {
+                    mySoundPool.playSound(SOUND_BULLET_HIT);
+                }
                 heroAircraft.decreaseHp(bullet.getPower());
                 bullet.vanish();
             }
@@ -370,9 +410,17 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 if (enemyAircraft.notValid()) {
                     // 已被其他子弹击毁的敌机，不再检测
                     // 避免多个子弹重复击毁同一敌机的判定
+                    if (enemyAircraft instanceof BossEnemy) {
+                        bossBgmPlayer.stop();
+                        bgmPlayer.play();
+                    }
                     continue;
                 }
                 if (enemyAircraft.crash(bullet)) {
+                    // 播放子弹音效
+                    if(isMusicOn) {
+                        mySoundPool.playSound(SOUND_BULLET_HIT);
+                    }
                     // 敌机撞击到英雄机子弹
                     // 敌机损失一定生命值
                     enemyAircraft.decreaseHp(bullet.getPower());
@@ -397,6 +445,14 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 continue;
             }
             if (heroAircraft.crash(flyingSupply) || flyingSupply.crash(heroAircraft)) {
+                // 播放道具音效
+                if (isMusicOn) {
+                    if (flyingSupply instanceof BombSupply) {
+                        mySoundPool.playSound(SOUND_BOMB_EXPLOSION);
+                    }else {
+                        mySoundPool.playSound(SOUND_GET_SUPPLY);
+                    }
+                }
                 flyingSupply.activate();
                 flyingSupply.vanish();
             }
@@ -418,17 +474,29 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         flyingSupplies.removeIf(AbstractFlyingObject::notValid);
 
         if (heroAircraft.notValid()) {
-            gameOverFlag = true;
-            Log.i(TAG, "heroAircraft is not Valid");
-
-            //获取当前时间
-            Date date = new Date();
-            @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
-            player = new Player("test",score,formatter.format(date));
-
-            mbLoop = false;
+            gameOver();
         }
 
+    }
+
+    private void gameOver(){
+        gameOverFlag = true;
+
+        if(isMusicOn) {
+            bgmPlayer.release();
+            bossBgmPlayer.release();
+            mySoundPool.playSound(SOUND_GAME_OVER);
+            //mySoundPool.release();
+        }
+
+        Log.i(TAG, "heroAircraft is not Valid");
+
+        //获取当前时间
+        Date date = new Date();
+        @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
+        player = new Player("test",score,formatter.format(date));
+
+        mbLoop = false;
     }
 
     public void draw() {

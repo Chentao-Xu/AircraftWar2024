@@ -23,6 +23,7 @@ public class GameActivity extends AppCompatActivity {
     private static final String TAG = "GameActivity";
 
     private int gameType=0;
+    private boolean isMusicOn;
     public static int screenWidth,screenHeight;
 
     private Handler handler;
@@ -36,7 +37,9 @@ public class GameActivity extends AppCompatActivity {
 
         if(getIntent() != null){
             gameType = getIntent().getIntExtra("gameType",1);
+            isMusicOn = getIntent().getBooleanExtra("isMusicOn",false);
             Log.i("GameType",""+gameType);
+            Log.i("isMusicOn",""+isMusicOn);
         }
 
         // 游戏结束
@@ -62,13 +65,13 @@ public class GameActivity extends AppCompatActivity {
         BaseGame baseGameView;
         switch (gameType) {
             case 1 :
-                baseGameView = new MediumGame(this,handler);
+                baseGameView = new MediumGame(this,handler,isMusicOn);
                 break;
             case 2 :
-                baseGameView = new HardGame(this,handler);
+                baseGameView = new HardGame(this,handler,isMusicOn);
                 break;
             default:
-                baseGameView = new EasyGame(this,handler); // 默认为简单模式
+                baseGameView = new EasyGame(this,handler,isMusicOn); // 默认为简单模式
                 break;
         }
         setContentView(baseGameView);
