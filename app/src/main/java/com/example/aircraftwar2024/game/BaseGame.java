@@ -57,6 +57,8 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     private final Paint mPaint;
     private Player player;
     private Handler handler;
+    private boolean isPaused = false;
+
 
     /**
      * Music
@@ -496,7 +498,32 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         @SuppressLint("SimpleDateFormat") SimpleDateFormat formatter = new SimpleDateFormat("MM-dd HH:mm");
         player = new Player("test",score,formatter.format(date));
 
+        Message message = Message.obtain();
+        message.what = 1;
+        message.obj = player;
+        handler.sendMessage(message);
+
         mbLoop = false;
+    }
+
+    public void pauseGame() {
+        isPaused = true;
+        if (isMusicOn) {
+            bgmPlayer.pause();
+            if(existBoss()){
+                bossBgmPlayer.pause();
+            }
+        }
+    }
+
+    public void resumeGame() {
+        isPaused = false;
+        if (isMusicOn) {
+            bgmPlayer.play();
+            if(existBoss()){
+                bossBgmPlayer.play();
+            }
+        }
     }
 
     public void draw() {
@@ -616,15 +643,12 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
     public void run() {
         /*TODO*/
         while(mbLoop) {
-            // 执行游戏逻辑
-            action();
-            // 绘制游戏画面
-            draw();
+            if (!isPaused) {
+                // 执行游戏逻辑
+                action();
+                // 绘制游戏画面
+                draw();
+            }
         }
-
-        Message message = Message.obtain();
-        message.what = 1;
-        message.obj = player;
-        handler.sendMessage(message);
     }
 }
