@@ -254,7 +254,6 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         return false;
     }
 
-
     private List<AbstractEnemyAircraft> produceEnemy() {
         enemyCounter++;
         if (enemyCounter >= enemyCycle) {

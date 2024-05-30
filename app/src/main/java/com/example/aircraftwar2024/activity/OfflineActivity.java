@@ -8,6 +8,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.aircraftwar2024.ActivityManager;
 import com.example.aircraftwar2024.R;
 
 public class OfflineActivity extends AppCompatActivity implements View.OnClickListener{
@@ -18,6 +19,8 @@ public class OfflineActivity extends AppCompatActivity implements View.OnClickLi
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityManager.getActivityManager().addActivity(this);
+
         setContentView(R.layout.activity_offline);
 
         Button easyModButton = findViewById(R.id.EasyModButton);

@@ -13,6 +13,7 @@ import android.widget.SimpleAdapter;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.aircraftwar2024.ActivityManager;
 import com.example.aircraftwar2024.R;
 import com.example.aircraftwar2024.playerDAO.Player;
 import com.example.aircraftwar2024.playerDAO.PlayerDao;
@@ -38,6 +39,8 @@ public class RecordActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityManager.getActivityManager().addActivity(this);
+
         setContentView(R.layout.activity_record);
 
         listView = findViewById(R.id.list);
@@ -99,8 +102,7 @@ public class RecordActivity extends AppCompatActivity {
 
         // 返回按钮点击事件
         returnBtn.setOnClickListener(v -> {
-            Intent intent1 = new Intent(RecordActivity.this,MainActivity.class);
-            startActivity(intent1);
+            ActivityManager.getActivityManager().returnToHome(this,MainActivity.class);
         });
     }
 

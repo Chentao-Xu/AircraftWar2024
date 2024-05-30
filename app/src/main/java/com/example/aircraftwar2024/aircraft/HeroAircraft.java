@@ -33,6 +33,7 @@ public class HeroAircraft extends AbstractAircraft {
         this.power = 30;
         this.direction = -1;
         this.rate = 3;
+        this.isValid = true;
         shootStrategy = new DirectShoot();
     }
 
@@ -56,5 +57,11 @@ public class HeroAircraft extends AbstractAircraft {
     @Override
     public void forward() {
         // 英雄机由鼠标控制，不通过forward函数移动
+    }
+
+    @Override
+    public void vanish(){
+        super.vanish();
+        heroAircraft = null;
     }
 }

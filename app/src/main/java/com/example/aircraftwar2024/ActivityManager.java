@@ -3,6 +3,7 @@ package com.example.aircraftwar2024;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.util.Log;
 
 import java.util.Stack;
@@ -57,10 +58,16 @@ public class ActivityManager {
     public void finishAllActivity(){
         for(int i = 0,size = activityStack.size();i<size;i++){
             if(activityStack.get(i) != null){
-                activityStack.get(i).finish();;
+                activityStack.get(i).finish();
             }
         }
         activityStack.clear();
+    }
+
+    public void returnToHome(Context context, Class<?> homeActivityClass) {
+        finishAllActivity(); // Close all activities
+        Intent intent = new Intent(context, homeActivityClass);
+        context.startActivity(intent);
     }
 
     public void exitApp (Context context){

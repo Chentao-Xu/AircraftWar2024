@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.RadioGroup;
 
+import com.example.aircraftwar2024.ActivityManager;
 import com.example.aircraftwar2024.R;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener{
@@ -18,6 +19,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityManager.getActivityManager().addActivity(this);
+
         setContentView(R.layout.activity_main);
 
         Button singlePlayerButton = findViewById(R.id.singlePlayerButton);
