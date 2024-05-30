@@ -351,7 +351,7 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 clickY = motionEvent.getY();
 
                 if(Math.abs( heroAircraft.getLocationX() - clickX ) < 100 &&
-                Math.abs( heroAircraft.getLocationY() - clickY ) < 100) {
+                Math.abs( heroAircraft.getLocationY() - clickY ) < 100 && !isPaused) {
                     heroAircraft.setLocation(clickX, clickY);
                 }
                 if ( clickX<0 || clickX> GameActivity.screenWidth || clickY<0 || clickY>GameActivity.screenHeight){
@@ -619,12 +619,12 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 if (enemy instanceof BossEnemy) {
                     // 绘制血条
                     mPaint.setColor(Color.BLACK);
-                    canvas.drawRect(screenWidth-280,170,screenWidth-30,200, mPaint);
+                    canvas.drawRect(screenWidth-280,190,screenWidth-30,220, mPaint);
                     mPaint.setColor(Color.WHITE);
-                    canvas.drawRect(screenWidth-275,175,screenWidth-35,195, mPaint);
+                    canvas.drawRect(screenWidth-275,195,screenWidth-35,215, mPaint);
                     mPaint.setColor(Color.RED);
                     int right = screenWidth-275 + ( 240 * enemy.getHp() / enemy.getMaxHp() );
-                    canvas.drawRect(screenWidth-275,170,right,195, mPaint);
+                    canvas.drawRect(screenWidth-275,190,right,215, mPaint);
                     break;
                 }
             }
