@@ -9,6 +9,7 @@ import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.os.Handler;
 import android.os.Message;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.SurfaceHolder;
@@ -74,6 +75,9 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
 
     //点击屏幕位置
     float clickX = 0, clickY=0;
+
+    //窗口宽高
+    int screenWidth, screenHeight;
 
     private int backGroundTop = 0;
 
@@ -161,6 +165,10 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
         super(context);
         this.handler = handler;
         this.isMusicOn = isMusicOn;
+
+        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        screenWidth = displayMetrics.widthPixels;
+        screenHeight = displayMetrics.heightPixels;
 
         mbLoop = true;
         mPaint = new Paint();  //设置画笔
@@ -341,8 +349,11 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
             public boolean onTouch(View view, MotionEvent motionEvent) {
                 clickX = motionEvent.getX();
                 clickY = motionEvent.getY();
-                heroAircraft.setLocation(clickX, clickY);
 
+                if(Math.abs( heroAircraft.getLocationX() - clickX ) < 100 &&
+                Math.abs( heroAircraft.getLocationY() - clickY ) < 100) {
+                    heroAircraft.setLocation(clickX, clickY);
+                }
                 if ( clickX<0 || clickX> GameActivity.screenWidth || clickY<0 || clickY>GameActivity.screenHeight){
                     // 防止超出边界
                     return false;
@@ -608,12 +619,12 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                 if (enemy instanceof BossEnemy) {
                     // 绘制血条
                     mPaint.setColor(Color.BLACK);
-                    canvas.drawRect(800,50,1050,80, mPaint);
+                    canvas.drawRect(screenWidth-280,170,screenWidth-30,200, mPaint);
                     mPaint.setColor(Color.WHITE);
-                    canvas.drawRect(805,55,1045,75, mPaint);
+                    canvas.drawRect(screenWidth-275,175,screenWidth-35,195, mPaint);
                     mPaint.setColor(Color.RED);
-                    int right = 805 + ( 240 * enemy.getHp() / enemy.getMaxHp() );
-                    canvas.drawRect(805,55,right,75, mPaint);
+                    int right = screenWidth-275 + ( 240 * enemy.getHp() / enemy.getMaxHp() );
+                    canvas.drawRect(screenWidth-275,170,right,195, mPaint);
                     break;
                 }
             }
