@@ -23,13 +23,26 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginBottom="100sp"
+        android:textColor="@android:color/white" />
+
+    <Button
+        android:id="@+id/onlineGameButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="联机对战"
+        android:textSize="24sp"
+        app:layout_constraintTop_toBottomOf="@id/singlePlayerButton"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginTop="20sp"
         android:textColor="@android:color/white" />
 
     <RadioGroup
         android:id="@+id/musicRadioGroup"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintTop_toBottomOf="@id/singlePlayerButton"
+        app:layout_constraintTop_toBottomOf="@id/onlineGameButton"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="20sp">
