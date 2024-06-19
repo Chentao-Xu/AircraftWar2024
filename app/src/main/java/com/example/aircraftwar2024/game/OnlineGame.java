@@ -11,6 +11,7 @@ import android.util.Log;
 
 import com.example.aircraftwar2024.ImageManager;
 import com.example.aircraftwar2024.activity.MainActivity;
+import com.example.aircraftwar2024.activity.OnlineActivity;
 import com.example.aircraftwar2024.aircraft.AbstractEnemyAircraft;
 import com.example.aircraftwar2024.playerDAO.Player;
 
@@ -28,17 +29,13 @@ import java.util.List;
 
 public class OnlineGame extends HardGame{
 
-    private int enemyScore;
+    private int maxScore;
     private Socket socket;
 
     public OnlineGame(Context context, Handler handler, boolean isMusicOn, Socket socket) throws IOException {
         super(context, handler, isMusicOn);
         this.socket = socket;
         new ClientThread().start();
-    }
-
-    public void setEnemyScore(int enemyScore) {
-        this.enemyScore = enemyScore;
     }
 
     @Override
@@ -63,7 +60,7 @@ public class OnlineGame extends HardGame{
         mPaint.setTypeface(Typeface.DEFAULT_BOLD);
 
         // 绘制敌方分数
-        canvas.drawText("EnemyScore: " + enemyScore, 400, 100, mPaint);
+        canvas.drawText("PlayersMaxScore: " + maxScore, 400, 100, mPaint);
     }
 
     private class ClientThread extends Thread{
@@ -76,7 +73,7 @@ public class OnlineGame extends HardGame{
         @Override
         public void run(){
             try {
-                socket = MainActivity.socket;
+                socket = OnlineActivity.socket;
                 in = new BufferedReader(new InputStreamReader(socket.getInputStream(),"utf-8"));
                 writer = new PrintWriter(new BufferedWriter(
                         new OutputStreamWriter(
@@ -107,14 +104,14 @@ public class OnlineGame extends HardGame{
                                 Message message = Message.obtain();
                                 message.what = 1;
                                 message.obj = player;
-                                message.arg1 = enemyScore;
+                                message.arg1 = maxScore;
                                 handler.sendMessage(message);
 
                                 mbLoop = false;
 
                                 break;
                             }else {
-                                enemyScore = Integer.parseInt(content);
+                                maxScore = Integer.parseInt(content);
                             }
                         }
                     } catch (IOException e) {
