@@ -251,7 +251,6 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
 
             // 撞击检测
             try {
-
                 crashCheckAction();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -423,8 +422,10 @@ public abstract class BaseGame extends SurfaceView implements SurfaceHolder.Call
                     // 已被其他子弹击毁的敌机，不再检测
                     // 避免多个子弹重复击毁同一敌机的判定
                     if (enemyAircraft instanceof BossEnemy) {
-                        bossBgmPlayer.stop();
-                        bgmPlayer.play();
+                        if (isMusicOn) {
+                            bossBgmPlayer.stop();
+                            bgmPlayer.play();
+                        }
                     }
                     continue;
                 }
